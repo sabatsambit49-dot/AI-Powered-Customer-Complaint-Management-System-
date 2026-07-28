@@ -40,3 +40,17 @@ def test_create_and_get_complaint():
     get_res = client.get(f"/api/complaints/{cid}")
     assert get_res.status_code == 200
     assert get_res.json()["id"] == cid
+
+    # Test Patch Status to Resolved
+    patch_res = client.patch(f"/api/complaints/{cid}/status", json={"status": "Resolved"})
+    assert patch_res.status_code == 200
+    assert patch_res.json()["status"] == "Resolved"
+
+    # Test Delete Complaint
+    del_res = client.delete(f"/api/complaints/{cid}")
+    assert del_res.status_code == 200
+    assert del_res.json()["id"] == cid
+
+    # Verify 404 on get after delete
+    get_after_del = client.get(f"/api/complaints/{cid}")
+    assert get_after_del.status_code == 404

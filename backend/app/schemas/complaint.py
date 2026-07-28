@@ -51,3 +51,6 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     reply: str
     timestamp: datetime
+
+class StatusUpdate(BaseModel):
+    status: str

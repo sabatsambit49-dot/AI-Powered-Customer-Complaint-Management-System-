@@ -29,6 +29,7 @@ export default function StatusPill({ type = 'severity', value = 'Pending Triage'
 
   const getStatusStyle = (val) => {
     switch (val?.toLowerCase()) {
+      case 'resolved':
       case 'triaged':
       case 'closed':
         return 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400';

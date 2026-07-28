@@ -7,7 +7,7 @@ from sse_starlette.sse import EventSourceResponse
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.complaint import Complaint, ChatMessage
-from app.schemas.complaint import ComplaintCreate, ComplaintResponse, ChatRequest, ChatResponse
+from app.schemas.complaint import ComplaintCreate, ComplaintResponse, ChatRequest, ChatResponse, StatusUpdate
 from app.graph.workflow import complaint_pipeline
 from app.services.chat_service import generate_chat_response
 
@@ -279,3 +279,30 @@ def chat_with_complaint_assistant(
     db.commit()
 
     return ChatResponse(reply=reply_text, timestamp=assistant_msg.created_at)
+
+
+@router.patch("/{complaint_id}/status", response_model=ComplaintResponse)
+def update_complaint_status(
+    complaint_id: int,
+    status_in: StatusUpdate,
+    db: Session = Depends(get_db)
+):
+    complaint = db.query(Complaint).filter(Complaint.id == complaint_id).first()
+    if not complaint:
+        raise HTTPException(status_code=404, detail="Complaint not found")
+    
+    complaint.status = status_in.status
+    db.commit()
+    db.refresh(complaint)
+    return complaint
+
+
+@router.delete("/{complaint_id}")
+def delete_complaint(complaint_id: int, db: Session = Depends(get_db)):
+    complaint = db.query(Complaint).filter(Complaint.id == complaint_id).first()
+    if not complaint:
+        raise HTTPException(status_code=404, detail="Complaint not found")
+    
+    db.delete(complaint)
+    db.commit()
+    return {"message": "Complaint deleted successfully", "id": complaint_id}

@@ -110,6 +110,23 @@ export const complaintSlice = createSlice({
     addSavedComplaint: (state, action) => {
       state.savedComplaints.unshift(action.payload);
     },
+    updateComplaintStatus: (state, action) => {
+      const { id, status } = action.payload;
+      const target = state.savedComplaints.find((c) => c.id === id);
+      if (target) {
+        target.status = status;
+      }
+      if (state.selectedComplaint && state.selectedComplaint.id === id) {
+        state.selectedComplaint.status = status;
+      }
+    },
+    deleteSavedComplaint: (state, action) => {
+      const id = action.payload;
+      state.savedComplaints = state.savedComplaints.filter((c) => c.id !== id);
+      if (state.selectedComplaint && state.selectedComplaint.id === id) {
+        state.selectedComplaint = null;
+      }
+    },
     setActiveTab: (state, action) => {
       state.activeTab = action.payload;
     },
@@ -131,6 +148,8 @@ export const {
   addChatMessage,
   setSavedComplaints,
   addSavedComplaint,
+  updateComplaintStatus,
+  deleteSavedComplaint,
   setActiveTab,
   setSelectedComplaint,
   setExplainModalOpen,

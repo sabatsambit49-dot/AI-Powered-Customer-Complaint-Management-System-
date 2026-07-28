@@ -6,7 +6,8 @@ import {
   populateExtractedData, 
   addChatMessage 
 } from '../store/complaintSlice';
-import { API_BASE } from '../config';
+import { logout } from '../store/authSlice';
+import { API_BASE, fetchWithAuth } from '../config';
 import { 
   UploadCloud, 
   FileText, 
@@ -25,6 +26,7 @@ export default function AssistantWidget() {
   const progressStep = useSelector((state) => state.complaint.progressStep);
   const progressPct = useSelector((state) => state.complaint.progressPct);
   const chatMessages = useSelector((state) => state.complaint.chatMessages);
+  const token = useSelector((state) => state.auth.token);
 
   const [pastedText, setPastedText] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);

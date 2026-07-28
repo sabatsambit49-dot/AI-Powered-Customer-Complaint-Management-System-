@@ -6,6 +6,7 @@ import {
   populateExtractedData, 
   addChatMessage 
 } from '../store/complaintSlice';
+import { API_BASE } from '../config';
 import { 
   UploadCloud, 
   FileText, 
@@ -74,7 +75,7 @@ export default function AssistantWidget() {
 
     try {
       // Connect via EventSource stream or fetch fallback
-      const response = await fetch('/api/complaints/extract', {
+      const response = await fetch(`${API_BASE}/api/complaints/extract`, {
         method: 'POST',
         body: formData,
       });
@@ -106,7 +107,7 @@ export default function AssistantWidget() {
     setIsChatSending(true);
 
     try {
-      const response = await fetch('/api/complaints/chat-draft', {
+      const response = await fetch(`${API_BASE}/api/complaints/chat-draft`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

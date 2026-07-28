@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setActiveTab } from '../store/complaintSlice';
 import { ShieldCheck, FileText, LayoutDashboard, Activity } from 'lucide-react';
+import { API_BASE } from '../config';
 
 export default function Header() {
   const dispatch = useDispatch();
@@ -10,7 +11,7 @@ export default function Header() {
   const [apiStatus, setApiStatus] = useState('checking');
 
   useEffect(() => {
-    fetch('/api/health')
+    fetch(`${API_BASE}/api/health`)
       .then((res) => res.json())
       .then((data) => {
         if (data.status === 'healthy') setApiStatus('online');

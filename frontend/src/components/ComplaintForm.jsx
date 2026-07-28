@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateFormField, resetForm, addSavedComplaint, setExplainModalOpen } from '../store/complaintSlice';
 import StatusPill from './StatusPill';
+import { API_BASE } from '../config';
 import { 
   Building2, 
   Package, 
@@ -27,7 +28,7 @@ export default function ComplaintForm() {
   const handleSave = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/complaints', {
+      const response = await fetch(`${API_BASE}/api/complaints`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)

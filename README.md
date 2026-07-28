@@ -4,8 +4,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 > **Live Demo Links:**
-> - 🌐 **Frontend (Vercel)**: `https://pharma-qms-complaints.vercel.app` *(Deploy Link Placeholder)*
-> - ⚡ **Backend API (Render)**: `https://pharma-qms-backend.onrender.com/api/health` *(Deploy Link Placeholder)*
+> - 🌐 **Frontend (Vercel)**: https://ai-powered-customer-complaint-manag-seven.vercel.app/
+> - ⚡ **Backend API (Render)**: https://ai-powered-customer-complaint-management-mnvp.onrender.com/api/health
 > - 📹 **Demo Videos**: [Video 1: Walkthrough](https://youtube.com) | [Video 2: Technical Deep Dive](https://youtube.com)
 
 ---

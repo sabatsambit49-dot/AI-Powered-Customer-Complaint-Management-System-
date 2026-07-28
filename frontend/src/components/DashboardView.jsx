@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSavedComplaints, setSelectedComplaint } from '../store/complaintSlice';
 import StatusPill from './StatusPill';
+import { API_BASE } from '../config';
 import { 
   Search, 
   Filter, 
@@ -31,7 +32,7 @@ export default function DashboardView() {
   const fetchComplaints = async () => {
     setIsLoading(true);
     try {
-      let url = '/api/complaints';
+      let url = `${API_BASE}/api/complaints`;
       if (severityFilter !== 'ALL') {
         url += `?severity=${severityFilter}`;
       }

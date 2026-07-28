@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setActiveTab } from '../store/complaintSlice';
-import { ShieldCheck, FileText, LayoutDashboard, Activity } from 'lucide-react';
+import { logout } from '../store/authSlice';
+import { ShieldCheck, FileText, LayoutDashboard, Activity, UserCheck, LogOut } from 'lucide-react';
 import { API_BASE } from '../config';
 
 export default function Header() {
   const dispatch = useDispatch();
   const activeTab = useSelector((state) => state.complaint.activeTab);
   const savedCount = useSelector((state) => state.complaint.savedComplaints.length);
+  const user = useSelector((state) => state.auth.user);
   const [apiStatus, setApiStatus] = useState('checking');
 
   useEffect(() => {
@@ -40,8 +42,10 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Navigation & Status */}
-        <div className="flex items-center gap-4">
+        {/* Navigation, User & Status */}
+        <div className="flex items-center gap-4 flex-wrap justify-end">
+          
+          {/* Navigation Bar */}
           <div className="flex items-center bg-slate-800/80 p-1 rounded-xl border border-slate-700/60">
             <button
               onClick={() => dispatch(setActiveTab('intake'))}
@@ -73,8 +77,27 @@ export default function Header() {
             </button>
           </div>
 
+          {/* User Profile & Log Out */}
+          {user && (
+            <div className="flex items-center gap-2 bg-slate-800/80 pl-3 pr-1.5 py-1.5 rounded-xl border border-slate-700/60 text-xs">
+              <UserCheck className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+              <div className="leading-tight hidden sm:block">
+                <span className="font-semibold text-slate-200 block">{user.full_name}</span>
+                <span className="text-[10px] text-slate-400 block">{user.role}</span>
+              </div>
+              <button
+                onClick={() => dispatch(logout())}
+                title="Log Out of Portal"
+                className="ml-1.5 px-2.5 py-1 rounded-lg bg-rose-600/20 hover:bg-rose-600/40 text-rose-400 border border-rose-500/30 font-medium transition flex items-center gap-1"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span className="hidden md:inline">Log Out</span>
+              </button>
+            </div>
+          )}
+
           {/* Backend Connection Indicator */}
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/50 border border-slate-700/40 text-xs">
+          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/50 border border-slate-700/40 text-xs">
             <Activity className="w-3.5 h-3.5 text-slate-400" />
             <span className="text-slate-400">API Status:</span>
             {apiStatus === 'online' ? (
@@ -91,6 +114,7 @@ export default function Header() {
               </span>
             )}
           </div>
+
         </div>
 
       </div>

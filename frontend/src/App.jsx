@@ -5,6 +5,7 @@ import ComplaintForm from './components/ComplaintForm';
 import AssistantWidget from './components/AssistantWidget';
 import DashboardView from './components/DashboardView';
 import ExplainModal from './components/ExplainModal';
+import Login from './components/Login';
 
 function MainContent() {
   const activeTab = useSelector((state) => state.complaint.activeTab);
@@ -33,6 +34,12 @@ function MainContent() {
 }
 
 export default function App() {
+  const token = useSelector((state) => state.auth.token);
+
+  if (!token) {
+    return <Login />;
+  }
+
   return (
     <div className="min-h-screen bg-[#0b0f19] text-slate-100 flex flex-col selection:bg-sky-500 selection:text-white">
       <Header />

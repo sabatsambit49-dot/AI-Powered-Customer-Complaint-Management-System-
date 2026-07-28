@@ -1,8 +1,9 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateFormField, resetForm, addSavedComplaint, setExplainModalOpen } from '../store/complaintSlice';
+import { logout } from '../store/authSlice';
 import StatusPill from './StatusPill';
-import { API_BASE } from '../config';
+import { API_BASE, fetchWithAuth } from '../config';
 import { 
   Building2, 
   Package, 
@@ -19,6 +20,7 @@ export default function ComplaintForm() {
   const dispatch = useDispatch();
   const form = useSelector((state) => state.complaint.currentForm);
   const isExtracting = useSelector((state) => state.complaint.isExtracting);
+  const token = useSelector((state) => state.auth.token);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,11 +30,16 @@ export default function ComplaintForm() {
   const handleSave = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${API_BASE}/api/complaints`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
-      });
+      const response = await fetchWithAuth(
+        `${API_BASE}/api/complaints`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(form)
+        },
+        token,
+        () => dispatch(logout())
+      );
       if (response.ok) {
         const savedData = await response.json();
         dispatch(addSavedComplaint(savedData));

@@ -3,9 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.database import engine, Base
 from app.api.router import api_router
+from app.models.complaint import Complaint, ChatMessage
+from app.models.user import User
+from app.services.seed import seed_demo_users
 
 # Create database tables automatically
 Base.metadata.create_all(bind=engine)
+seed_demo_users()
 
 app = FastAPI(
     title="AI-Powered Customer Complaint Management System",

@@ -74,11 +74,15 @@ export default function AssistantWidget() {
     if (pastedText) formData.append('raw_text', pastedText);
 
     try {
-      // Connect via EventSource stream or fetch fallback
-      const response = await fetch(`${API_BASE}/api/complaints/extract`, {
-        method: 'POST',
-        body: formData,
-      });
+      const response = await fetchWithAuth(
+        `${API_BASE}/api/complaints/extract`,
+        {
+          method: 'POST',
+          body: formData,
+        },
+        token,
+        () => dispatch(logout())
+      );
 
       if (!response.ok) throw new Error("Backend extraction failed");
 
@@ -107,14 +111,19 @@ export default function AssistantWidget() {
     setIsChatSending(true);
 
     try {
-      const response = await fetch(`${API_BASE}/api/complaints/chat-draft`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_req: { message: currentInput },
-          complaint_draft: form
-        })
-      });
+      const response = await fetchWithAuth(
+        `${API_BASE}/api/complaints/chat-draft`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_req: { message: currentInput },
+            complaint_draft: form
+          })
+        },
+        token,
+        () => dispatch(logout())
+      );
 
       if (response.ok) {
         const data = await response.json();

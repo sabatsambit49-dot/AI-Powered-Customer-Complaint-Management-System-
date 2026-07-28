@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     HOST: str = "0.0.0.0"
     PORT: int = 8000
     ENVIRONMENT: str = "development"
+    JWT_SECRET_KEY: str = "pharma_qms_super_secret_jwt_key_2026_demo"
+    JWT_ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_HOURS: int = 8
     CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,https://ai-powered-customer-complaint-manag-seven.vercel.app"
 
     model_config = SettingsConfigDict(

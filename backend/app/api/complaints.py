@@ -4,19 +4,26 @@ from datetime import datetime
 from typing import Optional, List
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query
 from sse_starlette.sse import EventSourceResponse
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.complaint import Complaint, ChatMessage
+from app.models.user import User
 from app.schemas.complaint import ComplaintCreate, ComplaintResponse, ChatRequest, ChatResponse, StatusUpdate
 from app.graph.workflow import complaint_pipeline
 from app.services.chat_service import generate_chat_response
+from app.core.security import get_current_user
 
-router = APIRouter(prefix="/complaints", tags=["Complaints"])
+router = APIRouter(
+    prefix="/complaints",
+    tags=["Complaints"],
+    dependencies=[Depends(get_current_user)]
+)
 
 def generate_complaint_number(db: Session) -> str:
-    count = db.query(Complaint).count() + 1
+    max_id = db.query(func.max(Complaint.id)).scalar() or 0
     year = datetime.now().year
-    return f"CC-{year}-{count:03d}"
+    return f"CC-{year}-{(max_id + 1):03d}"
 
 
 @router.post("/extract")

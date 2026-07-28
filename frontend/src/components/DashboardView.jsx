@@ -6,8 +6,9 @@ import {
   updateComplaintStatus, 
   deleteSavedComplaint 
 } from '../store/complaintSlice';
+import { logout } from '../store/authSlice';
 import StatusPill from './StatusPill';
-import { API_BASE } from '../config';
+import { API_BASE, fetchWithAuth } from '../config';
 import { 
   Search, 
   Filter, 
@@ -26,6 +27,7 @@ export default function DashboardView() {
   const dispatch = useDispatch();
   const savedComplaints = useSelector((state) => state.complaint.savedComplaints);
   const selectedComplaint = useSelector((state) => state.complaint.selectedComplaint);
+  const token = useSelector((state) => state.auth.token);
 
   const [search, setSearch] = useState('');
   const [severityFilter, setSeverityFilter] = useState('ALL');
@@ -56,7 +58,12 @@ export default function DashboardView() {
       if (statusFilter !== 'ALL') params.append('status', statusFilter);
       if (params.toString()) url += `?${params.toString()}`;
 
-      const res = await fetch(url);
+      const res = await fetchWithAuth(
+        url,
+        {},
+        token,
+        () => dispatch(logout())
+      );
       if (res.ok) {
         const data = await res.json();
         dispatch(setSavedComplaints(data));
@@ -73,11 +80,16 @@ export default function DashboardView() {
   const handleResolve = async (item) => {
     setIsResolvingId(item.id);
     try {
-      const response = await fetch(`${API_BASE}/api/complaints/${item.id}/status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'Resolved' })
-      });
+      const response = await fetchWithAuth(
+        `${API_BASE}/api/complaints/${item.id}/status`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'Resolved' })
+        },
+        token,
+        () => dispatch(logout())
+      );
 
       if (response.ok) {
         dispatch(updateComplaintStatus({ id: item.id, status: 'Resolved' }));
@@ -96,9 +108,14 @@ export default function DashboardView() {
     if (!deleteCandidate) return;
     setIsDeleting(true);
     try {
-      const response = await fetch(`${API_BASE}/api/complaints/${deleteCandidate.id}`, {
-        method: 'DELETE'
-      });
+      const response = await fetchWithAuth(
+        `${API_BASE}/api/complaints/${deleteCandidate.id}`,
+        {
+          method: 'DELETE'
+        },
+        token,
+        () => dispatch(logout())
+      );
 
       if (response.ok) {
         dispatch(deleteSavedComplaint(deleteCandidate.id));

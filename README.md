@@ -7,6 +7,10 @@
 > - 🌐 **Frontend (Vercel)**: https://ai-powered-customer-complaint-manag-seven.vercel.app/
 > - ⚡ **Backend API (Render)**: https://ai-powered-customer-complaint-management-mnvp.onrender.com/api/health
 > - 📹 **Demo Videos**: [Video 1: Walkthrough](https://youtube.com) | [Video 2: Technical Deep Dive](https://youtube.com)
+>
+> 🔑 **Demo Login Accounts (Pre-Seeded for Video & Portfolio Evaluation)**:
+> - **QA Reviewer**: Username: `qa_reviewer` | Password: `pharma_demo_reviewer_123` *(Elena Rostova, QA Lead Reviewer)*
+> - **QA Manager**: Username: `qa_manager` | Password: `pharma_demo_manager_123` *(Marcus Vance, QA Systems Manager)*
 
 ---
 

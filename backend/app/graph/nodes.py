@@ -1,12 +1,16 @@
 import json
 import re
+import logging
 from typing import Dict, Any, List
 from groq import Groq
 from app.core.config import settings
 from app.graph.state import GraphState
 from app.services.document_parser import parse_document
+from app.schemas.complaint import ExtractionResult
 from sqlalchemy.orm import Session
 from app.models.complaint import Complaint
+
+logger = logging.getLogger("pharma_qms.nodes")
 
 def get_groq_client():
     if not settings.GROQ_API_KEY:
@@ -106,12 +110,12 @@ Text:
     return state
 
 
-# NODE 3: EXTRACTION NODE (gemma2-9b-it)
+# NODE 3: EXTRACTION NODE (llama-3.1-8b-instant with llama-3.3-70b-versatile retry)
 def extraction_node(state: GraphState) -> GraphState:
     text = state.get("translated_text") or state.get("extracted_raw_text", "")
     client = get_groq_client()
 
-    default_fields = {
+    empty_fields = {
         "complaint_source": None,
         "customer_name": None,
         "customer_email": None,
@@ -123,18 +127,18 @@ def extraction_node(state: GraphState) -> GraphState:
         "quantity_affected": None,
         "complaint_type": None,
         "complaint_date": None,
-        "detailed_description": text[:500] if text else None
+        "detailed_description": None
     }
 
     if not client or not text.strip():
-        state["extracted_fields"] = default_fields
+        state["extracted_fields"] = empty_fields
         state["progress_percentage"] = 35
         return state
 
     system_prompt = (
-        "You are an automated pharmaceutical data extraction engine. "
-        "Your sole task is to extract structured fields from the complaint document into a strict JSON object matching the requested schema. "
-        "Do NOT write any introduction, greeting, apology, prose explanation, or customer reply letter. "
+        "You are an automated pharmaceutical data extraction engine for a cGMP Quality Management System. "
+        "Your sole task is to extract structured fields from the raw complaint document into a STRICT JSON object matching the requested schema. "
+        "DO NOT write any greeting, introduction, prose, customer reply letter, or explanations. "
         "Return ONLY a valid JSON object."
     )
 
@@ -150,12 +154,20 @@ def extraction_node(state: GraphState) -> GraphState:
 - expiry_date: Expiry date (YYYY-MM-DD or MM/YYYY)
 - quantity_affected: Quantity affected (e.g. 250 kg, 2 vials)
 - complaint_type: Defect classification (e.g. Out of Specification / OOS Assay, Foreign Particulate, Mislabeling)
-- detailed_description: Concise full summary of reported defect and observations
+- detailed_description: Concise summary of reported defect and observations (DO NOT paste raw document headers or full raw text here; write a clean concise summary of the reported defect)
 
 Raw Complaint Text:
 {text}
 
 Return ONLY valid JSON with null for missing fields."""
+
+    print(f"\n==================== [EXTRACTION LLM PROMPT] ====================")
+    print(f"SYSTEM PROMPT:\n{system_prompt}\n")
+    print(f"USER PROMPT:\n{user_prompt}")
+    print(f"=================================================================\n")
+
+    raw_llm_response = ""
+    parsed_fields = {}
 
     try:
         response = client.chat.completions.create(
@@ -168,10 +180,40 @@ Return ONLY valid JSON with null for missing fields."""
             temperature=0.0,
             max_tokens=800
         )
-        fields = safe_json_parse(response.choices[0].message.content)
-        state["extracted_fields"] = {**default_fields, **fields}
-    except Exception:
-        state["extracted_fields"] = default_fields
+        raw_llm_response = response.choices[0].message.content
+        print(f"\n==================== [RAW LLM RESPONSE (ATTEMPT 1)] ====================")
+        print(raw_llm_response)
+        print(f"=======================================================================\n")
+        
+        parsed_fields = safe_json_parse(raw_llm_response)
+        # Validate using Pydantic schema
+        validated_schema = ExtractionResult(**{**empty_fields, **parsed_fields})
+        state["extracted_fields"] = validated_schema.model_dump()
+    except Exception as e_first:
+        print(f"⚠️ Primary LLM Extraction Attempt Failed or Parse Error: {str(e_first)}. Retrying with REASONING_MODEL...")
+        try:
+            retry_response = client.chat.completions.create(
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                model=settings.REASONING_MODEL,
+                response_format={"type": "json_object"},
+                temperature=0.0,
+                max_tokens=800
+            )
+            raw_llm_response = retry_response.choices[0].message.content
+            print(f"\n==================== [RAW LLM RESPONSE (ATTEMPT 2 - RETRY)] ====================")
+            print(raw_llm_response)
+            print(f"===============================================================================\n")
+
+            parsed_fields = safe_json_parse(raw_llm_response)
+            validated_schema = ExtractionResult(**{**empty_fields, **parsed_fields})
+            state["extracted_fields"] = validated_schema.model_dump()
+        except Exception as e_second:
+            print(f"❌ Extraction failed completely after retry: {str(e_second)}")
+            state["extracted_fields"] = empty_fields
+            state["error"] = "extraction_failed"
 
     state["current_step"] = "Structured fields extracted"
     state["progress_percentage"] = 35
@@ -209,7 +251,7 @@ def completeness_checker_node(state: GraphState) -> GraphState:
     return state
 
 
-# NODE 5: RISK & SEVERITY CLASSIFICATION NODE (gemma2-9b-it)
+# NODE 5: RISK & SEVERITY CLASSIFICATION NODE (llama-3.1-8b-instant)
 def risk_severity_node(state: GraphState) -> GraphState:
     fields = state.get("extracted_fields", {})
     desc = fields.get("detailed_description", "")

@@ -1,0 +1,25 @@
+QUALITY COMPLAINT REPORT - PHARMA QA INTAKE
+
+Origin & Customer Details:
+- Complaint Source: Community Pharmacy Network (MediCare Retail)
+- Customer Name: MediCare Pharmacy #402 (Contact: Sarah Jenkins, Lead Pharmacist)
+- Customer Email: s.jenkins@medicare-pharm.com
+- Customer Phone: +1 (555) 887-3100
+- Date of Complaint: 2026-07-25
+
+Product & Batch Identification:
+- Product Name: Metoprolol Succinate ER Tablets
+- Product Strength/Grade: Label reads 50mg, but internal blister foil printed as 100mg
+- Batch / Lot Number: MTP-4412
+- Manufacturing Date: 2026-01-15
+- Expiry Date: 2028-01-14
+- Quantity Affected: 4 boxes (40 blister packs total)
+
+Complaint Details:
+- Complaint Type: Packaging & Labeling Error / Mislabeling
+- Detailed Description:
+During patient dispensing on July 25, 2026, a pharmacist noticed that the outer carton specifies "Metoprolol Succinate ER Tablets 50mg", but the individual aluminum foil blister backing inside the box is stamped "Metoprolol Succinate ER 100mg". 
+This mismatch creates an extreme hazard of accidental double-dosing if a patient or caregiver relies on the blister print. One patient reported feeling dizzy after taking tablets from this box, suspecting potential overdose due to strength confusion.
+
+Initial Assessment Notes:
+Requires immediate containment, potential Field Alert Report (FAR) notification, and verification of packaging line clearance logs for Batch MTP-4412.

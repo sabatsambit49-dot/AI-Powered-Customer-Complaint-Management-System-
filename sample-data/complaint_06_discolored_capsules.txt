@@ -1,0 +1,19 @@
+CUSTOMER QUALITY COMPLAINT REPORT - DISCOLORED CAPSULES
+
+1. Origin & Customer Details:
+- Complaint Source: Wholesale Distributor (Apex Health Supplies)
+- Customer Name: Apex Health Wholesalers (Contact: David Miller)
+- Customer Email: d.miller@apexhealth.com
+- Complaint Date: 2026-07-21
+
+2. Product & Batch Identification:
+- Product Name: Omeprazole Delayed-Release Capsules
+- Product Strength: 20mg USP
+- Batch / Lot Number: OMP-5510
+- Manufacturing Date: 2025-11-10
+- Expiry Date: 2027-11-09
+- Quantity Affected: 12 bottles (1,200 capsules total)
+
+3. Complaint Details:
+- Complaint Type: Physical Appearance Defect / Discoloration
+- Detailed Description: Customer returned 12 unopened sealed bottles of Omeprazole 20mg Capsules Batch OMP-5510. Upon opening sample bottle for QA intake inspection, capsules displayed mottled dark brown spot discoloration instead of standard opaque white/blue capsule shells. Internal humidity indicator card inside secondary bottle had turned pink, suggesting moisture ingress during packaging or defective bottle cap induction sealing.

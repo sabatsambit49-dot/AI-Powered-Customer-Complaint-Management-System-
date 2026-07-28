@@ -1,0 +1,19 @@
+QUALITY CONTROL INVESTIGATION: OUT OF SPECIFICATION POTENCY ASSAY
+
+1. Origin & Customer Details:
+- Complaint Source: Contract Testing Laboratory (PharmaAnalytica Inc)
+- Customer Name: PharmaAnalytica Quality Audit Division (Auditor: Dr. Karen Vance)
+- Customer Email: kvance@pharmaanalytica.org
+- Complaint Date: 2026-07-24
+
+2. Product & Batch Identification:
+- Product Name: Atorvastatin Calcium Tablets
+- Product Strength: 40mg
+- Batch / Lot Number: ATV-8833
+- Manufacturing Date: 2026-02-28
+- Expiry Date: 2028-02-27
+- Quantity Affected: 1 commercial lot (50,000 tablets)
+
+3. Complaint Details:
+- Complaint Type: Out of Specification (OOS) Potency / Sub-potent Batch
+- Detailed Description: Third-party verification testing of stability sample Batch ATV-8833 returned Atorvastatin active assay value of 86.4% of label claim (USP Acceptance Criteria: 90.0% - 110.0%). HPLC chromatogram indicated significant degradation peak corresponding to Atorvastatin lactone impurity. Batch failed 6-month accelerated stability testing. Requesting immediate recall protocol evaluation and root cause analysis of raw material degradation.

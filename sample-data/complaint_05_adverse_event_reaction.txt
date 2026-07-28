@@ -1,0 +1,19 @@
+ADVERSE DRUG REACTION & COMPLAINT FORM
+
+Date of Report: 2026-07-22
+Reporter: Dr. Elena Rostova, MD (General Hospital Clinic)
+Reporter Contact: elena.rostova@genhospital.org / +1 (555) 349-9022
+Complaint Source: Physician / Clinic Direct Escalation
+
+Patient & Drug Exposure Details:
+- Product Name: Amoxicillin & Clavulanate Potassium Tablets
+- Product Strength: 875mg / 125mg Film-Coated
+- Batch / Lot Number: AMX-9903
+- Manufacturing Date: 2026-02-10
+- Expiry Date: 2028-02-09
+- Quantity Affected: 1 bottle (20 tablets)
+
+Event & Quality Complaint Details:
+Patient (42-year-old male) was prescribed Amoxicillin/Clavulanate Batch AMX-9903 for sinusitis. Within 45 minutes of taking the first tablet, the patient developed acute urticaria, facial swelling, and severe gastrointestinal cramping. Upon inspecting the remaining tablets in the prescription bottle, the physician noted an unusual pungent chemical odor and soft, crumbly tablet consistency with dark brownish speckles on the tablet surface.
+
+Physician notes suspect chemical contamination or active ingredient degradation. Product lot has been returned to hospital pharmacy. Suspected adverse drug reaction (ADR) submitted to regulatory portal. Immediate quality investigation of Batch AMX-9903 requested.

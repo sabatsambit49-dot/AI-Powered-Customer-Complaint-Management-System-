@@ -70,7 +70,7 @@ graph TD
 - **Frontend**: React 18, Redux Toolkit 2.2, Vite 5, Tailwind CSS 3.4, Lucide React Icons, Google "Inter" Font.
 - **Backend**: Python 3.11, FastAPI 0.110, Uvicorn, Pydantic v2, SSE-Starlette.
 - **AI Agent Orchestration**: LangGraph 0.0.30, LangChain Core.
-- **LLM Provider**: Groq API (`gemma2-9b-it` for fast extraction/classification; `llama-3.3-70b-versatile` for root cause, CAPA, & summary).
+- **LLM Provider**: Groq API (`llama-3.1-8b-instant` for fast extraction/classification; `llama-3.3-70b-versatile` for root cause, CAPA, & summary).
 - **Database & ORM**: PostgreSQL 15 (or Neon Serverless Postgres), SQLAlchemy 2.0, Alembic 1.13.
 - **Document Parsing**: `pypdf`, `python-docx`, Python standard `email` package.
 - **DevOps & Containerization**: Docker, Docker Compose, GitHub Actions CI/CD.
@@ -81,9 +81,9 @@ graph TD
 
 1. **Ingest Node**: Receives uploaded files (PDF/DOCX/TXT/EML) or raw text and extracts clean plain-text strings while handling decoding fallbacks.
 2. **Language & Sentiment Node**: Detects complaint input language, translates non-English complaints to English, and assesses sentiment/urgency.
-3. **Extraction Node (`gemma2-9b-it`)**: Parses raw text using structured JSON schema extraction into 12 distinct pharma fields (Product Name, Batch Number, Customer, Expiry, Qty, Defect Type, etc.).
+3. **Extraction Node (`llama-3.1-8b-instant`)**: Parses raw text using structured JSON schema extraction into 12 distinct pharma fields (Product Name, Batch Number, Customer, Expiry, Qty, Defect Type, etc.).
 4. **Completeness Checker Node**: Evaluates mandatory fields, calculates a 0-100% completeness score, and flags missing fields with suggested clarifying questions for the customer.
-5. **Risk & Severity Classification Node (`gemma2-9b-it`)**: Classifies `initial_severity` (Critical/Major/Minor), `priority` (High/Medium/Low), and evaluates advisory regulatory escalation (e.g. Field Alert Report / FAR).
+5. **Risk & Severity Classification Node (`llama-3.1-8b-instant`)**: Classifies `initial_severity` (Critical/Major/Minor), `priority` (High/Medium/Low), and evaluates advisory regulatory escalation (e.g. Field Alert Report / FAR).
 6. **Duplicate Detection Node**: Queries PostgreSQL database for existing complaint records matching the same batch lot number or product description to flag recurring lot defects.
 7. **Root Cause Recommendation Node (`llama-3.3-70b-versatile`)**: Recommends cGMP root cause categories (Manufacturing Deviation, Packaging Line Error, Cold Chain Excursion, Sub-potency) with technical reasoning.
 8. **CAPA Recommendation Node (`llama-3.3-70b-versatile`)**: Drafts formal 3-step Corrective and Preventive Actions (Immediate Containment, Corrective, Preventive).

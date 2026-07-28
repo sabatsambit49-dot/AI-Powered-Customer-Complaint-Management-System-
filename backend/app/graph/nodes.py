@@ -16,17 +16,19 @@ def get_groq_client():
 
 def safe_json_parse(text: str) -> Dict[str, Any]:
     """Helper to safely extract JSON block from LLM output."""
+    if not text:
+        return {}
+    text_clean = text.strip()
     try:
-        return json.loads(text)
+        return json.loads(text_clean)
     except Exception:
-        # Find JSON substring between ```json and ``` or {...}
-        match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', text, re.DOTALL)
+        match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', text_clean, re.DOTALL)
         if match:
             try:
                 return json.loads(match.group(1))
             except Exception:
                 pass
-        match_brace = re.search(r'(\{.*?\})', text, re.DOTALL)
+        match_brace = re.search(r'(\{.*?\})', text_clean, re.DOTALL)
         if match_brace:
             try:
                 return json.loads(match_brace.group(1))
@@ -63,7 +65,8 @@ def language_sentiment_node(state: GraphState) -> GraphState:
         state["progress_percentage"] = 20
         return state
 
-    prompt = f"""Analyze the following pharmaceutical quality complaint text:
+    system_prompt = "You are an automated data extraction node. Output ONLY a valid JSON object. Do NOT write prose or reply letters."
+    user_prompt = f"""Analyze the following pharmaceutical quality complaint text:
 1. Detect language.
 2. Determine sentiment & urgency (e.g., "Urgent - High Concern", "Angry", "Neutral", "Routine inquiry").
 3. If non-English, provide English translation. Otherwise repeat original text.
@@ -80,16 +83,20 @@ Text:
 
     try:
         response = client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
             model=settings.PRIMARY_MODEL,
-            temperature=0.1,
+            response_format={"type": "json_object"},
+            temperature=0.0,
             max_tokens=500
         )
         data = safe_json_parse(response.choices[0].message.content)
         state["detected_language"] = data.get("detected_language", "English")
         state["sentiment_urgency"] = data.get("sentiment_urgency", "Neutral")
         state["translated_text"] = data.get("translated_text", text)
-    except Exception as e:
+    except Exception:
         state["detected_language"] = "English"
         state["sentiment_urgency"] = "Neutral"
         state["translated_text"] = text
@@ -124,36 +131,46 @@ def extraction_node(state: GraphState) -> GraphState:
         state["progress_percentage"] = 35
         return state
 
-    prompt = f"""You are an expert Quality Assurance Lead in pharmaceutical manufacturing (API & FDF).
-Extract the following structured fields from the raw complaint text into a STRICT JSON object:
-- complaint_source (e.g. Hospital Pharmacy, Retail Pharmacy, Distributor, Patient, Internal Audit)
-- customer_name
-- customer_email
-- product_name (Exact drug or API name)
-- product_strength_grade (Dosage strength e.g. 50mg, 1g or grade e.g. Micronized USP)
-- batch_lot_number (Batch / Lot #)
-- manufacturing_date (YYYY-MM-DD or MM/YYYY if present)
-- expiry_date (YYYY-MM-DD or MM/YYYY if present)
-- quantity_affected (e.g. 2 vials, 40 blister packs, 2,000 kg)
-- complaint_type (e.g. Foreign Particulate, Mislabeling, Cold Chain Excursion, Discoloration, OOS Potency)
-- complaint_date (YYYY-MM-DD if mentioned)
-- detailed_description (Clear concise summary of the reported defect/issue)
+    system_prompt = (
+        "You are an automated pharmaceutical data extraction engine. "
+        "Your sole task is to extract structured fields from the complaint document into a strict JSON object matching the requested schema. "
+        "Do NOT write any introduction, greeting, apology, prose explanation, or customer reply letter. "
+        "Return ONLY a valid JSON object."
+    )
 
-Raw Text:
+    user_prompt = f"""Extract the following structured fields from the raw pharmaceutical quality complaint text:
+- complaint_source: Source or channel (e.g. Hospital Pharmacy, Retail Pharmacy, Distributor, Patient, Customer QA Audit)
+- customer_name: Full name of customer/contact person or organization (e.g. Rajesh Mehta / Svenska Pharma AB)
+- customer_email: Email address of customer/contact person (e.g. r.mehta@svenska-pharma.se)
+- complaint_date: Date of complaint (YYYY-MM-DD)
+- product_name: Exact drug product or API material name (e.g. Metformin Hydrochloride API)
+- product_strength_grade: Strength or grade (e.g. EP/USP Grade, 500mg)
+- batch_lot_number: Batch or Lot Number (e.g. MHC-2507-018)
+- manufacturing_date: Manufacturing date (YYYY-MM-DD or MM/YYYY)
+- expiry_date: Expiry date (YYYY-MM-DD or MM/YYYY)
+- quantity_affected: Quantity affected (e.g. 250 kg, 2 vials)
+- complaint_type: Defect classification (e.g. Out of Specification / OOS Assay, Foreign Particulate, Mislabeling)
+- detailed_description: Concise full summary of reported defect and observations
+
+Raw Complaint Text:
 {text}
 
 Return ONLY valid JSON with null for missing fields."""
 
     try:
         response = client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
             model=settings.PRIMARY_MODEL,
-            temperature=0.1,
+            response_format={"type": "json_object"},
+            temperature=0.0,
             max_tokens=800
         )
         fields = safe_json_parse(response.choices[0].message.content)
         state["extracted_fields"] = {**default_fields, **fields}
-    except Exception as e:
+    except Exception:
         state["extracted_fields"] = default_fields
 
     state["current_step"] = "Structured fields extracted"
@@ -212,7 +229,8 @@ def risk_severity_node(state: GraphState) -> GraphState:
         state["progress_percentage"] = 60
         return state
 
-    prompt = f"""As a Pharma QMS QA Director, evaluate the risk severity of this complaint.
+    system_prompt = "You are an automated Pharma QMS Risk Classification node. Output ONLY a valid JSON object. Do NOT write prose or reply letters."
+    user_prompt = f"""As a Pharma QMS QA Director, evaluate the risk severity of this complaint.
 Pharma Severity Rules:
 - CRITICAL: Direct patient safety impact, sterility failure, foreign particulate in injectable, mislabeled dose strength, batch-wide contamination, adverse reactions. Priority = High. Regulatory Flag = "Escalation Recommended - FAR / Adverse Event Notification".
 - MAJOR: Out of specification potency, container seal failure, physical tablet discoloration/crumbling, cold chain excursion, minor labeling defect without dose confusion. Priority = Medium. Regulatory Flag = "Standard QMS Investigation".
@@ -233,9 +251,13 @@ Return STRICT JSON:
 
     try:
         response = client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
             model=settings.PRIMARY_MODEL,
-            temperature=0.1,
+            response_format={"type": "json_object"},
+            temperature=0.0,
             max_tokens=400
         )
         data = safe_json_parse(response.choices[0].message.content)
@@ -266,8 +288,8 @@ def duplicate_detection_node(state: GraphState) -> GraphState:
 
     if db and (batch or product):
         query = db.query(Complaint)
-        if batch and batch.strip() and batch.lower() not in ["null", "none"]:
-            matches = query.filter(Complaint.batch_lot_number.ilike(f"%{batch.strip()}%")).all()
+        if batch and str(batch).strip() and str(batch).lower() not in ["null", "none"]:
+            matches = query.filter(Complaint.batch_lot_number.ilike(f"%{str(batch).strip()}%")).all()
             for m in matches:
                 duplicate_matches.append({
                     "id": m.id,
@@ -303,14 +325,14 @@ def root_cause_node(state: GraphState) -> GraphState:
         state["progress_percentage"] = 80
         return state
 
-    prompt = f"""You are a Lead QA Root Cause Investigator in a cGMP Pharmaceutical Facility.
-Analyze this quality complaint and determine the probable root cause category and technical reasoning.
+    system_prompt = "You are an automated Root Cause Analysis node in a cGMP facility. Output ONLY a valid JSON object. Do NOT write prose or reply letters."
+    user_prompt = f"""Analyze this quality complaint and determine the probable root cause category and technical reasoning.
 
 Categories:
 - Manufacturing / Processing Deviation
 - Packaging & Labeling Line Error
 - Cold-Chain / Storage Transport Excursion
-- Raw Material / API Sub-potency
+- Raw Material / API Sub-potency / OOS Assay
 - Facility & Environmental Sterility Defect
 - Customer Handling / Storage Misuse
 
@@ -321,15 +343,19 @@ Description: {fields.get('detailed_description')}
 
 Return STRICT JSON:
 {{
-  "root_cause_category": "Packaging & Labeling Line Error",
+  "root_cause_category": "Raw Material / API Sub-potency / OOS Assay",
   "root_cause_reasoning": "Detailed 2-3 sentence technical hypothesis explaining the probable root cause."
 }}"""
 
     try:
         response = client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
             model=settings.REASONING_MODEL,
-            temperature=0.2,
+            response_format={"type": "json_object"},
+            temperature=0.0,
             max_tokens=400
         )
         data = safe_json_parse(response.choices[0].message.content)
@@ -357,7 +383,8 @@ def capa_node(state: GraphState) -> GraphState:
         state["progress_percentage"] = 90
         return state
 
-    prompt = f"""Draft a formal 3-step Corrective and Preventive Action (CAPA) recommendation for this pharmaceutical quality complaint.
+    system_prompt = "You are an automated CAPA recommendation node. Output ONLY a valid JSON object. Do NOT write prose or reply letters."
+    user_prompt = f"""Draft a formal 3-step Corrective and Preventive Action (CAPA) recommendation for this pharmaceutical quality complaint.
 
 Product: {fields.get('product_name')} (Batch: {fields.get('batch_lot_number')})
 Root Cause Category: {rc_cat}
@@ -370,9 +397,13 @@ Return STRICT JSON:
 
     try:
         response = client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
             model=settings.REASONING_MODEL,
-            temperature=0.2,
+            response_format={"type": "json_object"},
+            temperature=0.0,
             max_tokens=400
         )
         data = safe_json_parse(response.choices[0].message.content)
@@ -400,7 +431,8 @@ def summary_node(state: GraphState) -> GraphState:
         state["is_complete"] = True
         return state
 
-    prompt = f"""Summarize this complaint into a concise 2-sentence executive summary for QA Reviewers.
+    system_prompt = "You are an automated Executive QA Summary node. Output ONLY a valid JSON object. Do NOT write prose or reply letters."
+    user_prompt = f"""Summarize this complaint into a concise 2-sentence executive summary for QA Reviewers.
 
 Product: {fields.get('product_name')}
 Batch: {fields.get('batch_lot_number')}
@@ -416,9 +448,13 @@ Return STRICT JSON:
 
     try:
         response = client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
             model=settings.REASONING_MODEL,
-            temperature=0.2,
+            response_format={"type": "json_object"},
+            temperature=0.0,
             max_tokens=300
         )
         data = safe_json_parse(response.choices[0].message.content)

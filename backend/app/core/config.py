@@ -1,10 +1,13 @@
 import os
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List
 
+load_dotenv()
+
 class Settings(BaseSettings):
     GROQ_API_KEY: str = ""
-    PRIMARY_MODEL: str = "gemma2-9b-it"
+    PRIMARY_MODEL: str = "llama-3.1-8b-instant"
     REASONING_MODEL: str = "llama-3.3-70b-versatile"
     DATABASE_URL: str = "sqlite:///./pharma_complaints.db"
     HOST: str = "0.0.0.0"

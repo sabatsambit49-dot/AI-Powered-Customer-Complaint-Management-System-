@@ -150,16 +150,16 @@ export default function DashboardView() {
       {toastMessage && (
         <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-xl border text-xs font-medium shadow-xl flex items-center gap-2 animate-fade-in ${
           toastMessage.isError
-            ? 'bg-rose-900/90 border-rose-500 text-rose-200'
-            : 'bg-emerald-900/90 border-emerald-500 text-emerald-200'
+            ? 'bg-rose-50 border-rose-300 text-rose-800'
+            : 'bg-emerald-50 border-emerald-300 text-emerald-800'
         }`}>
-          {toastMessage.isError ? <AlertTriangle className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
+          {toastMessage.isError ? <AlertTriangle className="w-4 h-4 text-rose-600" /> : <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
           {toastMessage.text}
         </div>
       )}
 
       {/* Search & Filter Header */}
-      <div className="bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl p-4 flex flex-col lg:flex-row items-center justify-between gap-4 shadow-lg">
+      <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col lg:flex-row items-center justify-between gap-4 shadow-sm">
         
         {/* Search Bar */}
         <div className="relative w-full lg:w-80">
@@ -169,7 +169,7 @@ export default function DashboardView() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by product, batch #, customer..."
-            className="w-full bg-slate-800/80 border border-slate-700/80 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500 transition"
+            className="w-full bg-slate-50 border border-slate-300 rounded-lg pl-9 pr-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none transition"
           />
         </div>
 
@@ -178,7 +178,7 @@ export default function DashboardView() {
           
           {/* Severity Filter */}
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400 font-medium flex items-center gap-1">
+            <span className="text-slate-500 font-medium flex items-center gap-1">
               <Filter className="w-3.5 h-3.5" /> Severity:
             </span>
             {['ALL', 'Critical', 'Major', 'Minor'].map((sev) => (
@@ -187,8 +187,8 @@ export default function DashboardView() {
                 onClick={() => setSeverityFilter(sev)}
                 className={`px-2.5 py-1 rounded-lg font-medium transition ${
                   severityFilter === sev
-                    ? 'bg-sky-600 text-white shadow-sm'
-                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200'
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
                 }`}
               >
                 {sev}
@@ -198,15 +198,15 @@ export default function DashboardView() {
 
           {/* Status Filter */}
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400 font-medium">Status:</span>
+            <span className="text-slate-500 font-medium">Status:</span>
             {['ALL', 'Pending Triage', 'In Review', 'Resolved'].map((st) => (
               <button
                 key={st}
                 onClick={() => setStatusFilter(st)}
                 className={`px-2.5 py-1 rounded-lg font-medium transition ${
                   statusFilter === st
-                    ? 'bg-sky-600 text-white shadow-sm'
-                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200'
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
                 }`}
               >
                 {st}
@@ -219,45 +219,45 @@ export default function DashboardView() {
       </div>
 
       {/* Complaints Table / List */}
-      <div className="bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-slate-300">
-            <thead className="bg-slate-950/80 text-slate-400 uppercase tracking-wider text-[11px] border-b border-slate-800">
+          <table className="w-full text-left text-xs text-slate-700">
+            <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider text-[11px] border-b border-slate-200 font-semibold">
               <tr>
-                <th className="py-3.5 px-4 font-semibold">Complaint #</th>
-                <th className="py-3.5 px-4 font-semibold">Customer / Source</th>
-                <th className="py-3.5 px-4 font-semibold">Product Name</th>
-                <th className="py-3.5 px-4 font-semibold">Batch Lot</th>
-                <th className="py-3.5 px-4 font-semibold">Defect Type</th>
-                <th className="py-3.5 px-4 font-semibold">Severity</th>
-                <th className="py-3.5 px-4 font-semibold">Status</th>
-                <th className="py-3.5 px-4 font-semibold text-right">Actions</th>
+                <th className="py-3.5 px-4">Complaint #</th>
+                <th className="py-3.5 px-4">Customer / Source</th>
+                <th className="py-3.5 px-4">Product Name</th>
+                <th className="py-3.5 px-4">Batch Lot</th>
+                <th className="py-3.5 px-4">Defect Type</th>
+                <th className="py-3.5 px-4">Severity</th>
+                <th className="py-3.5 px-4">Status</th>
+                <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y divide-slate-100">
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-12 text-slate-500">
+                  <td colSpan={8} className="text-center py-12 text-slate-400">
                     No complaints found matching criteria. Log a new complaint from the intake form!
                   </td>
                 </tr>
               ) : (
                 filtered.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-800/40 transition group">
-                    <td className="py-3.5 px-4 font-mono font-bold text-sky-400">
+                  <tr key={item.id} className="hover:bg-slate-50/80 transition group">
+                    <td className="py-3.5 px-4 font-mono font-bold text-blue-600">
                       {item.complaint_number}
                     </td>
                     <td className="py-3.5 px-4">
-                      <span className="font-semibold text-slate-200 block">{item.customer_name || 'N/A'}</span>
+                      <span className="font-semibold text-slate-900 block">{item.customer_name || 'N/A'}</span>
                       <span className="text-[11px] text-slate-500">{item.complaint_source || 'Direct'}</span>
                     </td>
-                    <td className="py-3.5 px-4 font-medium text-slate-200">
+                    <td className="py-3.5 px-4 font-medium text-slate-900">
                       {item.product_name || 'N/A'}
                     </td>
-                    <td className="py-3.5 px-4 font-mono text-slate-400">
+                    <td className="py-3.5 px-4 font-mono text-slate-600">
                       {item.batch_lot_number || 'N/A'}
                     </td>
-                    <td className="py-3.5 px-4 text-slate-300">
+                    <td className="py-3.5 px-4 text-slate-700">
                       {item.complaint_type || 'Unspecified'}
                     </td>
                     <td className="py-3.5 px-4">
@@ -273,7 +273,7 @@ export default function DashboardView() {
                         <button
                           onClick={() => dispatch(setSelectedComplaint(item))}
                           title="View Details"
-                          className="px-2.5 py-1 rounded-lg bg-sky-600/20 hover:bg-sky-600/40 text-sky-400 border border-sky-500/30 text-xs font-medium transition flex items-center gap-1"
+                          className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs font-medium transition flex items-center gap-1"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           <span className="hidden sm:inline">Details</span>
@@ -286,8 +286,8 @@ export default function DashboardView() {
                           title={item.status === 'Resolved' ? 'Already Resolved' : 'Mark as Resolved'}
                           className={`px-2.5 py-1 rounded-lg text-xs font-medium transition flex items-center gap-1 ${
                             item.status === 'Resolved'
-                              ? 'bg-emerald-500/10 text-emerald-400/60 border border-emerald-500/20 cursor-default'
-                              : 'bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 border border-emerald-500/30'
+                              ? 'bg-emerald-50 text-emerald-600/60 border border-emerald-200 cursor-default'
+                              : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200'
                           }`}
                         >
                           <CheckCircle2 className="w-3.5 h-3.5" />
@@ -300,7 +300,7 @@ export default function DashboardView() {
                         <button
                           onClick={() => setDeleteCandidate(item)}
                           title="Delete Complaint"
-                          className="p-1 rounded-lg bg-rose-600/20 hover:bg-rose-600/40 text-rose-400 border border-rose-500/30 transition"
+                          className="p-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 transition"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -317,34 +317,34 @@ export default function DashboardView() {
 
       {/* Delete Confirmation Dialog Modal */}
       {deleteCandidate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-            <div className="flex items-center gap-3 text-rose-400">
-              <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div className="flex items-center gap-3 text-rose-600">
+              <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center">
                 <Trash2 className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-white">Delete Complaint</h3>
-                <p className="text-xs text-slate-400">Confirmation Required</p>
+                <h3 className="text-base font-bold text-slate-900">Delete Complaint</h3>
+                <p className="text-xs text-slate-500">Confirmation Required</p>
               </div>
             </div>
 
-            <p className="text-xs text-slate-300 leading-relaxed">
-              Delete complaint <span className="font-mono font-bold text-rose-400">{deleteCandidate.complaint_number}</span> ({deleteCandidate.product_name || 'Record'})? This action cannot be undone.
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Delete complaint <span className="font-mono font-bold text-rose-600">{deleteCandidate.complaint_number}</span> ({deleteCandidate.product_name || 'Record'})? This action cannot be undone.
             </p>
 
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
                 onClick={() => setDeleteCandidate(null)}
                 disabled={isDeleting}
-                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition"
+                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs font-medium transition"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmDelete}
                 disabled={isDeleting}
-                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold shadow-lg shadow-rose-600/20 transition flex items-center gap-1.5"
+                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold shadow-sm transition flex items-center gap-1.5"
               >
                 {isDeleting ? 'Deleting...' : 'Confirm Delete'}
               </button>
@@ -355,21 +355,21 @@ export default function DashboardView() {
 
       {/* Detail Modal */}
       {selectedComplaint && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6 shadow-2xl relative space-y-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white border border-slate-200 rounded-2xl max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6 shadow-2xl relative space-y-6">
             
             <button
               onClick={() => dispatch(setSelectedComplaint(null))}
-              className="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
+              className="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
             >
               <X className="w-5 h-5" />
             </button>
 
             {/* Modal Header */}
-            <div className="flex items-center justify-between pr-8 border-b border-slate-800 pb-4">
+            <div className="flex items-center justify-between pr-8 border-b border-slate-200 pb-4">
               <div>
-                <span className="text-xs font-mono font-bold text-sky-400">{selectedComplaint.complaint_number}</span>
-                <h3 className="text-lg font-bold text-white">{selectedComplaint.product_name}</h3>
+                <span className="text-xs font-mono font-bold text-blue-600">{selectedComplaint.complaint_number}</span>
+                <h3 className="text-lg font-bold text-slate-900">{selectedComplaint.product_name}</h3>
               </div>
               <div className="flex items-center gap-2">
                 <StatusPill type="severity" value={selectedComplaint.initial_severity} />
@@ -381,41 +381,41 @@ export default function DashboardView() {
               
               {/* Column 1 */}
               <div className="space-y-4">
-                <div className="bg-slate-800/40 p-4 rounded-xl border border-slate-700/40 space-y-2">
-                  <span className="text-slate-400 font-semibold flex items-center gap-1.5 text-sky-400">
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                  <span className="text-slate-500 font-semibold flex items-center gap-1.5 text-blue-600">
                     <Building2 className="w-3.5 h-3.5" /> Customer Details
                   </span>
-                  <div>Customer: <span className="text-slate-200 font-medium">{selectedComplaint.customer_name}</span></div>
-                  <div>Email: <span className="text-slate-200 font-medium">{selectedComplaint.customer_email || 'N/A'}</span></div>
-                  <div>Source: <span className="text-slate-200 font-medium">{selectedComplaint.complaint_source}</span></div>
-                  <div>Date: <span className="text-slate-200 font-medium">{selectedComplaint.complaint_date}</span></div>
+                  <div>Customer: <span className="text-slate-900 font-medium">{selectedComplaint.customer_name}</span></div>
+                  <div>Email: <span className="text-slate-900 font-medium">{selectedComplaint.customer_email || 'N/A'}</span></div>
+                  <div>Source: <span className="text-slate-900 font-medium">{selectedComplaint.complaint_source}</span></div>
+                  <div>Date: <span className="text-slate-900 font-medium">{selectedComplaint.complaint_date}</span></div>
                 </div>
 
-                <div className="bg-slate-800/40 p-4 rounded-xl border border-slate-700/40 space-y-2">
-                  <span className="text-slate-400 font-semibold flex items-center gap-1.5 text-sky-400">
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                  <span className="text-slate-500 font-semibold flex items-center gap-1.5 text-blue-600">
                     <Package className="w-3.5 h-3.5" /> Product & Batch
                   </span>
-                  <div>Strength: <span className="text-slate-200 font-medium">{selectedComplaint.product_strength_grade}</span></div>
-                  <div>Batch / Lot: <span className="font-mono text-sky-300 font-bold">{selectedComplaint.batch_lot_number}</span></div>
-                  <div>Mfg / Exp: <span className="text-slate-200">{selectedComplaint.manufacturing_date} / {selectedComplaint.expiry_date}</span></div>
-                  <div>Quantity: <span className="text-slate-200">{selectedComplaint.quantity_affected}</span></div>
+                  <div>Strength: <span className="text-slate-900 font-medium">{selectedComplaint.product_strength_grade}</span></div>
+                  <div>Batch / Lot: <span className="font-mono text-blue-600 font-bold">{selectedComplaint.batch_lot_number}</span></div>
+                  <div>Mfg / Exp: <span className="text-slate-900">{selectedComplaint.manufacturing_date} / {selectedComplaint.expiry_date}</span></div>
+                  <div>Quantity: <span className="text-slate-900">{selectedComplaint.quantity_affected}</span></div>
                 </div>
               </div>
 
               {/* Column 2 */}
               <div className="space-y-4">
-                <div className="bg-slate-800/40 p-4 rounded-xl border border-slate-700/40 space-y-2">
-                  <span className="text-slate-400 font-semibold flex items-center gap-1.5 text-sky-400">
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                  <span className="text-slate-500 font-semibold flex items-center gap-1.5 text-blue-600">
                     <BrainCircuit className="w-3.5 h-3.5" /> AI Triage & Root Cause
                   </span>
-                  <div>Root Cause: <span className="text-sky-300 font-medium">{selectedComplaint.root_cause_category}</span></div>
-                  <p className="text-slate-400 text-[11px] leading-relaxed mt-1">{selectedComplaint.root_cause_reasoning}</p>
+                  <div>Root Cause: <span className="text-blue-700 font-semibold">{selectedComplaint.root_cause_category}</span></div>
+                  <p className="text-slate-600 text-[11px] leading-relaxed mt-1">{selectedComplaint.root_cause_reasoning}</p>
                 </div>
 
                 {selectedComplaint.capa_recommendation && (
-                  <div className="bg-slate-800/40 p-4 rounded-xl border border-slate-700/40 space-y-2">
-                    <span className="text-slate-400 font-semibold block text-emerald-400">Recommended CAPA</span>
-                    <p className="text-slate-300 whitespace-pre-line leading-relaxed">{selectedComplaint.capa_recommendation}</p>
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                    <span className="text-slate-500 font-semibold block text-emerald-700">Recommended CAPA</span>
+                    <p className="text-slate-700 whitespace-pre-line leading-relaxed">{selectedComplaint.capa_recommendation}</p>
                   </div>
                 )}
               </div>
@@ -423,23 +423,23 @@ export default function DashboardView() {
             </div>
 
             {/* Description Box */}
-            <div className="bg-slate-800/40 p-4 rounded-xl border border-slate-700/40 space-y-1.5 text-xs">
-              <span className="text-slate-400 font-semibold block">Full Defect Description</span>
-              <p className="text-slate-200 leading-relaxed whitespace-pre-line">{selectedComplaint.detailed_description}</p>
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1.5 text-xs">
+              <span className="text-slate-500 font-semibold block">Full Defect Description</span>
+              <p className="text-slate-900 leading-relaxed whitespace-pre-line">{selectedComplaint.detailed_description}</p>
             </div>
 
             {/* Summary */}
             {selectedComplaint.summary && (
-              <div className="bg-sky-500/10 border border-sky-500/30 p-4 rounded-xl text-xs space-y-1">
-                <span className="text-sky-300 font-bold block">Executive QA Summary</span>
-                <p className="text-slate-200 leading-relaxed">{selectedComplaint.summary}</p>
+              <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl text-xs space-y-1">
+                <span className="text-blue-800 font-bold block">Executive QA Summary</span>
+                <p className="text-slate-800 leading-relaxed">{selectedComplaint.summary}</p>
               </div>
             )}
 
             <div className="pt-2 flex justify-end">
               <button
                 onClick={() => dispatch(setSelectedComplaint(null))}
-                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-medium text-xs transition"
+                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium text-xs border border-slate-300 transition"
               >
                 Close
               </button>

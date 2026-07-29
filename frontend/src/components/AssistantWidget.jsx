@@ -46,22 +46,6 @@ export default function AssistantWidget() {
     }
   };
 
-  const loadSample = async (sampleName) => {
-    try {
-      let content = "";
-      if (sampleName === "foreign_particulate") {
-        content = `From: Dr. Aris Thorne <a.thorne@stjude-hospital.org>\nTo: QA Complaints <qa@apexpharma.com>\nSubject: URGENT: Black Particulate Matter Observed in Sterile Ceftriaxone Injection Vials (Batch #CFT-9082)\nDate: Mon, 27 Jul 2026\n\nDear QA Team,\nDuring routine reconstitution in ICU at St. Jude Hospital, pharmacy staff noticed black thread-like particulate matter floating inside two 1g vials of Ceftriaxone Sodium (Batch CFT-9082, Exp 11/2027, Mfg 05/2026). Vials quarantined. Immediately provide return authorization.`;
-      } else if (sampleName === "mislabeled_strength") {
-        content = `Origin: Community Pharmacy Network (MediCare Retail)\nCustomer: MediCare Pharmacy #402 (Sarah Jenkins)\nEmail: s.jenkins@medicare-pharm.com\nProduct: Metoprolol Succinate ER Tablets\nIssue: Carton label specifies 50mg strength, but internal aluminum blister backing is printed as 100mg strength!\nBatch: MTP-4412\nMfg: 2026-01-15 | Exp: 2028-01-14\nQty: 4 boxes (40 blister packs). One patient dizziness reported.`;
-      } else if (sampleName === "cold_chain") {
-        content = `From: Logistics QA <logistics-qa@biologix.com>\nSubject: Cold Chain Temperature Excursion Notification - Insul-Fine Biologic (Batch #INS-7701)\nCustomer: BioLogix Regional Distribution Hub\nProduct: Insul-Fine (Recombinant Human Insulin) 100 IU/mL\nBatch: INS-7701 | Mfg: 2026-03-10 | Exp: 2027-09-09\nData logger recorded +18°C excursion for 14 hours during refrigerated transit (limit +2 to +8°C). 500 vials held in quarantine.`;
-      }
-      setPastedText(content);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const runExtraction = async () => {
     if (!pastedText && !selectedFile) {
       alert("Please paste complaint text or select a document file first.");
@@ -143,159 +127,127 @@ export default function AssistantWidget() {
   };
 
   return (
-    <div className="bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6 flex flex-col h-full">
+    <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6 flex flex-col h-full">
       
       {/* Header */}
-      <div className="pb-4 border-b border-slate-800 flex items-center justify-between">
+      <div className="pb-4 border-b border-slate-200 flex items-center justify-between">
         <div>
-          <h2 className="text-base font-bold text-white flex items-center gap-2">
-            <Bot className="w-5 h-5 text-sky-400" />
-            AI Intake Assistant & Document Ingestion
+          <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+            AI Complaint Intake Assistant
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-600 border border-blue-200">
+              BETA
+            </span>
           </h2>
-          <p className="text-xs text-slate-400">Powered by Groq LLM & LangGraph Workflow</p>
+          <p className="text-xs text-slate-500">Upload document or paste email text to extract structured QA fields</p>
         </div>
+        <Bot className="w-5 h-5 text-blue-600" />
       </div>
 
-      {/* Upload & Paste Container */}
-      <div className="space-y-3 text-xs">
-        
-        {/* Drag & Drop File Zone */}
-        <div
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={handleFileDrop}
-          className="border-2 border-dashed border-slate-700/80 hover:border-sky-500/60 bg-slate-800/40 rounded-xl p-4 text-center transition cursor-pointer group"
-        >
-          <input
-            type="file"
-            id="fileUpload"
-            onChange={handleFileSelect}
-            accept=".pdf,.docx,.doc,.txt,.eml"
-            className="hidden"
-          />
-          <label htmlFor="fileUpload" className="cursor-pointer flex flex-col items-center gap-2">
-            <UploadCloud className="w-7 h-7 text-slate-400 group-hover:text-sky-400 transition" />
-            <div>
-              <span className="text-slate-300 font-medium block">
-                {selectedFile ? selectedFile.name : "Drag & drop document or click to browse"}
-              </span>
-              <span className="text-[11px] text-slate-500">Supports PDF, DOCX, TXT, and EML files</span>
-            </div>
-          </label>
-        </div>
-
-        {/* Text Area */}
-        <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <label className="text-slate-400 font-medium">Or Paste Complaint Text / Email</label>
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] text-slate-500">Sample Data:</span>
-              <button
-                type="button"
-                onClick={() => loadSample("foreign_particulate")}
-                className="text-[11px] text-sky-400 hover:text-sky-300 transition underline"
-              >
-                Injectable Particulate
-              </button>
-              <button
-                type="button"
-                onClick={() => loadSample("mislabeled_strength")}
-                className="text-[11px] text-sky-400 hover:text-sky-300 transition underline"
-              >
-                Mislabeling
-              </button>
-              <button
-                type="button"
-                onClick={() => loadSample("cold_chain")}
-                className="text-[11px] text-sky-400 hover:text-sky-300 transition underline"
-              >
-                Cold Chain
-              </button>
-            </div>
-          </div>
-          <textarea
-            rows={4}
-            value={pastedText}
-            onChange={(e) => setPastedText(e.target.value)}
-            placeholder="Paste raw email or complaint description here..."
-            className="w-full bg-slate-800/80 border border-slate-700/80 rounded-xl p-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500 transition leading-relaxed resize-none"
-          />
-        </div>
-
-        {/* Action Button */}
-        <button
-          type="button"
-          onClick={runExtraction}
-          disabled={isExtracting}
-          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition shadow-md shadow-sky-600/20 disabled:opacity-50"
-        >
-          {isExtracting ? (
+      {/* Drag & Drop File Upload Area */}
+      <div
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={handleFileDrop}
+        className="border-2 border-dashed border-slate-300 hover:border-blue-500 bg-slate-50 hover:bg-blue-50/50 rounded-xl p-4 text-center transition cursor-pointer relative"
+      >
+        <input
+          type="file"
+          accept=".pdf,.docx,.txt,.eml"
+          onChange={handleFileSelect}
+          className="absolute inset-0 opacity-0 cursor-pointer"
+        />
+        <div className="flex flex-col items-center gap-1.5 pointer-events-none">
+          {selectedFile ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              Running LangGraph Agent Nodes...
+              <FileCheck className="w-7 h-7 text-blue-600" />
+              <span className="text-xs font-semibold text-slate-800">{selectedFile.name}</span>
+              <span className="text-[11px] text-slate-500">{(selectedFile.size / 1024).toFixed(1)} KB — Ready to extract</span>
             </>
           ) : (
             <>
-              <Sparkles className="w-4 h-4" />
-              Run AI Extraction & Triage Pipeline
+              <UploadCloud className="w-7 h-7 text-slate-400" />
+              <span className="text-xs font-medium text-slate-700">Drag & drop document (PDF, DOCX, TXT, EML)</span>
+              <span className="text-[11px] text-slate-400">or click to browse from local computer</span>
             </>
           )}
-        </button>
-
+        </div>
       </div>
+
+      {/* Text Paste Fallback */}
+      <div className="space-y-1.5">
+        <label className="text-xs font-medium text-slate-700 block">Or Paste Complaint Text / Email</label>
+        <textarea
+          rows={3}
+          value={pastedText}
+          onChange={(e) => setPastedText(e.target.value)}
+          placeholder="Paste raw customer email or complaint text here..."
+          className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none transition leading-relaxed"
+        />
+      </div>
+
+      {/* Run Extraction Button */}
+      <button
+        type="button"
+        onClick={runExtraction}
+        disabled={isExtracting}
+        className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs shadow-sm transition flex items-center justify-center gap-2 disabled:opacity-50"
+      >
+        {isExtracting ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span>Running Extraction & Triage...</span>
+          </>
+        ) : (
+          <>
+            <Sparkles className="w-4 h-4" />
+            <span>Run AI Extraction & Triage Pipeline</span>
+          </>
+        )}
+      </button>
 
       {/* Progress Bar */}
       {isExtracting && (
-        <div className="space-y-1.5 bg-slate-800/60 p-3 rounded-xl border border-slate-700/60 text-xs">
-          <div className="flex justify-between text-slate-300">
-            <span className="flex items-center gap-1.5">
-              <Loader2 className="w-3.5 h-3.5 text-sky-400 animate-spin" />
-              {progressStep}
-            </span>
-            <span className="font-mono text-sky-400 font-bold">{progressPct}%</span>
+        <div className="space-y-1.5 bg-blue-50/70 p-3 rounded-xl border border-blue-200">
+          <div className="flex justify-between text-xs font-medium text-blue-900">
+            <span>{progressStep}</span>
+            <span>{progressPct}%</span>
           </div>
-          <div className="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
+          <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
             <div
-              className="bg-gradient-to-r from-sky-500 to-indigo-500 h-2 rounded-full transition-all duration-300"
+              className="bg-blue-600 h-full transition-all duration-300"
               style={{ width: `${progressPct}%` }}
             />
           </div>
         </div>
       )}
 
-      <hr className="border-slate-800" />
-
-      {/* Conversational Assistant RAG Chat Widget */}
-      <div className="flex-1 flex flex-col space-y-3 min-h-[250px]">
-        <span className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
-          <Bot className="w-4 h-4 text-sky-400" />
-          Conversational QA Assistant
-        </span>
-
-        {/* Messages Log */}
-        <div className="flex-1 bg-slate-950/60 border border-slate-800/80 rounded-xl p-3.5 overflow-y-auto space-y-3 max-h-[260px]">
+      {/* Assistant Chat Stream */}
+      <div className="flex-1 flex flex-col space-y-3 pt-2">
+        <span className="text-xs font-semibold text-slate-700 block">QA Assistant Interaction</span>
+        
+        <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-3 max-h-64 overflow-y-auto">
           {chatMessages.map((msg, idx) => (
             <div
               key={idx}
-              className={`flex items-start gap-2.5 text-xs ${
+              className={`flex items-start gap-2 ${
                 msg.sender === 'user' ? 'justify-end' : 'justify-start'
               }`}
             >
               {msg.sender === 'assistant' && (
-                <div className="w-6 h-6 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-6 h-6 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 mt-0.5 border border-blue-200">
                   <Bot className="w-3.5 h-3.5" />
                 </div>
               )}
               <div
-                className={`p-3 rounded-xl max-w-[85%] leading-relaxed whitespace-pre-line ${
+                className={`max-w-[85%] text-xs p-3 rounded-2xl leading-relaxed whitespace-pre-line ${
                   msg.sender === 'user'
-                    ? 'bg-sky-600 text-white rounded-br-none'
-                    : 'bg-slate-800/90 text-slate-200 border border-slate-700/60 rounded-bl-none'
+                    ? 'bg-blue-600 text-white rounded-br-none shadow-xs font-medium'
+                    : 'bg-blue-50 border border-blue-100 text-slate-800 rounded-bl-none shadow-xs'
                 }`}
               >
                 {msg.content}
               </div>
               {msg.sender === 'user' && (
-                <div className="w-6 h-6 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 mt-0.5">
                   <User className="w-3.5 h-3.5" />
                 </div>
               )}
@@ -310,12 +262,12 @@ export default function AssistantWidget() {
             value={chatInput}
             onChange={(e) => setChatInput(e.target.value)}
             placeholder="Ask me anything about this complaint or regulatory impact..."
-            className="flex-1 bg-slate-800/80 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500 transition"
+            className="flex-1 bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition"
           />
           <button
             type="submit"
             disabled={isChatSending || !chatInput.trim()}
-            className="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white transition disabled:opacity-50 flex items-center justify-center"
+            className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition disabled:opacity-50 flex items-center justify-center shadow-sm"
           >
             {isChatSending ? (
               <Loader2 className="w-4 h-4 animate-spin" />

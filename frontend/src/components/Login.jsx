@@ -60,27 +60,27 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
       
-      {/* Background Glows */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Background Soft Gradients */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-100/50 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-100/50 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="w-full max-w-md bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl p-8 shadow-2xl relative z-10 space-y-6">
+      <div className="w-full max-w-md bg-white border border-slate-200 rounded-2xl p-8 shadow-xl relative z-10 space-y-6">
         
         {/* Header Branding */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-sky-500/10 border border-sky-500/30 text-sky-400 mb-2 shadow-lg shadow-sky-500/10">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-600 text-white mb-2 shadow-md shadow-blue-600/20">
             <ShieldCheck className="w-7 h-7" />
           </div>
-          <h1 className="text-xl font-extrabold text-white tracking-tight">Pharma QMS Portal</h1>
-          <p className="text-xs text-slate-400">Authenticated Access for Complaint Intake & AI Risk Triage</p>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Pharma QMS Portal</h1>
+          <p className="text-xs text-slate-500">Authenticated Access for Complaint Intake & AI Risk Triage</p>
         </div>
 
         {/* Error Alert */}
         {authError && (
-          <div className="bg-rose-950/80 border border-rose-500/50 rounded-2xl p-3.5 text-xs text-rose-300 flex items-start gap-2.5 animate-fade-in shadow-lg">
-            <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+          <div className="bg-rose-50 border border-rose-200 rounded-xl p-3.5 text-xs text-rose-700 flex items-start gap-2.5 shadow-sm">
+            <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
             <div>
               <span className="font-semibold block">Authentication Failure</span>
               <span>{authError}</span>
@@ -93,30 +93,30 @@ export default function Login() {
           
           {/* Username */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-300 block">Username</label>
+            <label className="text-xs font-semibold text-slate-700 block">Username</label>
             <div className="relative">
-              <User className="w-4 h-4 text-slate-500 absolute left-3.5 top-3" />
+              <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="e.g. qa_reviewer"
-                className="w-full bg-slate-800/80 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500 transition"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none transition"
               />
             </div>
           </div>
 
           {/* Password */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-300 block">Password</label>
+            <label className="text-xs font-semibold text-slate-700 block">Password</label>
             <div className="relative">
-              <KeyRound className="w-4 h-4 text-slate-500 absolute left-3.5 top-3" />
+              <KeyRound className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full bg-slate-800/80 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500 transition"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none transition"
               />
             </div>
           </div>
@@ -125,7 +125,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold text-xs transition shadow-lg shadow-sky-500/20 disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+            className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs transition shadow-sm disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
           >
             {isLoading ? (
               <>
@@ -142,12 +142,12 @@ export default function Login() {
         </form>
 
         {/* Quick Demo Credentials Panel */}
-        <div className="pt-4 border-t border-slate-800/80 space-y-2.5">
-          <div className="flex items-center justify-between text-[11px] text-slate-400">
+        <div className="pt-4 border-t border-slate-200 space-y-2.5">
+          <div className="flex items-center justify-between text-[11px] text-slate-500">
             <span className="font-semibold flex items-center gap-1">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Quick Demo Accounts:
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Quick Demo Accounts:
             </span>
-            <span className="text-slate-500">Click to log in</span>
+            <span className="text-slate-400">Click to log in</span>
           </div>
 
           <div className="grid grid-cols-1 gap-2 text-xs">
@@ -156,13 +156,13 @@ export default function Login() {
             <button
               type="button"
               onClick={() => handleQuickLogin('qa_reviewer', 'pharma_demo_reviewer_123')}
-              className="p-2.5 rounded-xl bg-slate-800/50 hover:bg-slate-800 border border-slate-700/60 transition text-left flex items-center justify-between group"
+              className="p-2.5 rounded-xl bg-slate-50 hover:bg-blue-50/60 border border-slate-200 transition text-left flex items-center justify-between group"
             >
               <div>
-                <span className="font-semibold text-slate-200 block group-hover:text-sky-300 transition">Elena Rostova</span>
-                <span className="text-[10px] text-slate-400">QA Lead Reviewer (qa_reviewer)</span>
+                <span className="font-semibold text-slate-900 block group-hover:text-blue-600 transition">Elena Rostova</span>
+                <span className="text-[10px] text-slate-500">QA Lead Reviewer (qa_reviewer)</span>
               </div>
-              <span className="px-2 py-0.5 rounded-md bg-sky-500/10 text-sky-400 text-[10px] font-mono border border-sky-500/20">
+              <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-600 text-[10px] font-semibold border border-blue-200">
                 1-Click Login
               </span>
             </button>
@@ -171,13 +171,13 @@ export default function Login() {
             <button
               type="button"
               onClick={() => handleQuickLogin('qa_manager', 'pharma_demo_manager_123')}
-              className="p-2.5 rounded-xl bg-slate-800/50 hover:bg-slate-800 border border-slate-700/60 transition text-left flex items-center justify-between group"
+              className="p-2.5 rounded-xl bg-slate-50 hover:bg-blue-50/60 border border-slate-200 transition text-left flex items-center justify-between group"
             >
               <div>
-                <span className="font-semibold text-slate-200 block group-hover:text-sky-300 transition">Marcus Vance</span>
-                <span className="text-[10px] text-slate-400">QA Systems Manager (qa_manager)</span>
+                <span className="font-semibold text-slate-900 block group-hover:text-blue-600 transition">Marcus Vance</span>
+                <span className="text-[10px] text-slate-500">QA Systems Manager (qa_manager)</span>
               </div>
-              <span className="px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-400 text-[10px] font-mono border border-indigo-500/20">
+              <span className="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-600 text-[10px] font-semibold border border-indigo-200">
                 1-Click Login
               </span>
             </button>

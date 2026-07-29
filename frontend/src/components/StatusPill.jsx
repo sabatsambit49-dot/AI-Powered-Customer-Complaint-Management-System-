@@ -6,23 +6,23 @@ export default function StatusPill({ type = 'severity', value = 'Pending Triage'
     switch (val?.toLowerCase()) {
       case 'critical':
         return {
-          bg: 'bg-rose-500/10 border-rose-500/30 text-rose-400',
-          icon: <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+          bg: 'bg-rose-50 border-rose-200 text-rose-700',
+          icon: <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
         };
       case 'major':
         return {
-          bg: 'bg-amber-500/10 border-amber-500/30 text-amber-400',
-          icon: <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
+          bg: 'bg-amber-50 border-amber-200 text-amber-700',
+          icon: <AlertCircle className="w-3.5 h-3.5 text-amber-600" />
         };
       case 'minor':
         return {
-          bg: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400',
-          icon: <Info className="w-3.5 h-3.5 text-emerald-400" />
+          bg: 'bg-emerald-50 border-emerald-200 text-emerald-700',
+          icon: <Info className="w-3.5 h-3.5 text-emerald-600" />
         };
       default:
         return {
-          bg: 'bg-slate-700/40 border-slate-600/40 text-slate-400',
-          icon: <Info className="w-3.5 h-3.5 text-slate-400" />
+          bg: 'bg-slate-100 border-slate-200 text-slate-600',
+          icon: <Info className="w-3.5 h-3.5 text-slate-500" />
         };
     }
   };
@@ -32,18 +32,18 @@ export default function StatusPill({ type = 'severity', value = 'Pending Triage'
       case 'resolved':
       case 'triaged':
       case 'closed':
-        return 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400';
+        return 'bg-emerald-50 border-emerald-200 text-emerald-700';
       case 'in review':
-        return 'bg-sky-500/10 border-sky-500/30 text-sky-400';
+        return 'bg-blue-50 border-blue-200 text-blue-700';
       default:
-        return 'bg-slate-700/40 border-slate-600 text-slate-400';
+        return 'bg-amber-50 border-amber-200 text-amber-800';
     }
   };
 
   if (type === 'severity') {
     const style = getSeverityStyle(value);
     return (
-      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${style.bg}`}>
+      <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${style.bg}`}>
         {style.icon}
         {value}
       </span>
@@ -51,7 +51,7 @@ export default function StatusPill({ type = 'severity', value = 'Pending Triage'
   }
 
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusStyle(value)}`}>
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusStyle(value)}`}>
       <CheckCircle2 className="w-3.5 h-3.5" />
       {value}
     </span>
